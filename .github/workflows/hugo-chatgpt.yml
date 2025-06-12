@@ -36,7 +36,7 @@ jobs:
           echo "import openai" > generate.py
           echo "openai.api_key = \"$OPENAI_API_KEY\"" >> generate.py
           echo "response = openai.ChatCompletion.create(" >> generate.py
-          echo "  model='gpt-4'," >> generate.py
+          echo "  model='gpt-3.5-turbo'," >> generate.py
           echo "  messages=[" >> generate.py
           echo "    {'role': 'system', 'content': 'You are a thoughtful blogger who writes reflective, long-form content on self-improvement, motivation, and mindful living.'}," >> generate.py
           echo "    {'role': 'user', 'content': 'Write a 700-1000 word blog post with a meaningful, insightful tone. Include a title.'}" >> generate.py
