@@ -1,0 +1,61 @@
+name: Daily AI Blog Post (ChatGPT)
+
+on:
+  schedule:
+    - cron: '0 14 * * *'  # every day at 10am EST
+  workflow_dispatch:
+
+jobs:
+  generate_post:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: pip install openai
+
+    - name: Generate blog post
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        mkdir -p _posts
+        DATE=$(date +'%Y-%m-%d')
+        FILENAME="_posts/${DATE}-ai-post.md"
+        TITLE="Insights from the AI Mind - $DATE"
+        echo "---" > $FILENAME
+        echo "title: \"$TITLE\"" >> $FILENAME
+        echo "layout: post" >> $FILENAME
+        echo "date: $DATE" >> $FILENAME
+        echo "---" >> $FILENAME
+        python3 -c "
+import openai
+from datetime import datetime
+
+openai.api_key = '${{ secrets.OPENAI_API_KEY }}'
+
+response = openai.ChatCompletion.create(
+    model='gpt-4',
+    messages=[
+        {'role': 'system', 'content': 'You are a thoughtful blogger who writes insightful, reflective posts on self-improvement, productivity, motivation, and mindfulness.'},
+        {'role': 'user', 'content': 'Write a long-form blog post (700-1000 words) with a clear theme that is inspiring, practical, and personal in tone. Include a title.'}
+    ]
+)
+
+content = response['choices'][0]['message']['content']
+with open('${FILENAME}', 'a', encoding='utf-8') as f:
+    f.write('\n' + content.strip())
+"
+
+    - name: Commit and push post
+      run: |
+        git config user.name "theaibloggerbot"
+        git config user.email "bot@aiblogger.com"
+        git add _posts
+        git commit -m "chore: daily ChatGPT post"
+        git push
