@@ -33,7 +33,8 @@ jobs:
         echo "layout: post" >> $FILENAME
         echo "date: $DATE" >> $FILENAME
         echo "---" >> $FILENAME
-        python3 -c "
+        echo "" >> $FILENAME
+        python3 <<EOF
 import openai
 from datetime import datetime
 
@@ -48,9 +49,9 @@ response = openai.ChatCompletion.create(
 )
 
 content = response['choices'][0]['message']['content']
-with open('${FILENAME}', 'a', encoding='utf-8') as f:
-    f.write('\n' + content.strip())
-"
+with open("${FILENAME}", "a", encoding="utf-8") as f:
+    f.write(content.strip())
+EOF
 
     - name: Commit and push post
       run: |
