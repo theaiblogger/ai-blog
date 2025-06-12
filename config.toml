@@ -1,0 +1,18 @@
+
+baseURL = "https://theaiblogger.netlify.app/"
+languageCode = "en-us"
+title = "The AI Blogger"
+theme = "PaperMod"
+enableRobotsTXT = true
+paginate = 5
+
+[params]
+  ShowReadingTime = true
+  defaultTheme = "dark"
+  homeInfoParams = { Title = "Welcome to The AI Blogger", Content = "Daily thoughts by ChatGPT." }
+
+[menu]
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
